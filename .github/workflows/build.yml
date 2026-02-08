@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
     inputs:
       package_name:
-        description: "Package name (for filename only):"
+        description: "Package name of the game (e.g. com.sunborn.girlsfrontline.en):"
         required: true
-        default: "Universal"
 
 jobs:
   build:
@@ -19,6 +18,8 @@ jobs:
         cache: gradle
     - run: |
         chmod +x ./gradlew
+        # This line finds the placeholder and replaces it with your game ID
+        sed -i "s/com.game.packagename/${{ github.event.inputs.package_name }}/g" module/src/main/cpp/game.h
         ./gradlew :module:assembleRelease
     - uses: actions/upload-artifact@v4
       with:
